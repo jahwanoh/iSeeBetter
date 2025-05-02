@@ -1,6 +1,7 @@
 torch==2.4.0
 pytorch-ssim==0.1
 numpy==1.22.0
-scikit-image==0.15.0
+scikit-image>=0.19.0 # Example: Use a newer version
 tqdm==4.66.3
 opencv-python==4.8.1.78
+Cython # Add Cython if needed as a build dependency
