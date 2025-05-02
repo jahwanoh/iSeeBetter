@@ -1,0 +1,6 @@
+{
+    "docker.environment": {
+        "DOCKER_HOST": "ssh://bepro@151.237.235.38:19207"
+        // "DOCKER_HOST": "ssh://bepro@192.168.178.207"
+    }
+}
