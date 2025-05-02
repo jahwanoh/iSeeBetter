@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
 # Set Python 3.8 as default
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1 && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1 && \
-    wget https://bootstrap.pypa.io/get-pip.py && \
+    wget https://bootstrap.pypa.io/pip/3.8/get-pip.py && \
     python get-pip.py && \
     rm get-pip.py && \
     python -m pip install --upgrade pip setuptools wheel
