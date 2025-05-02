@@ -22,6 +22,7 @@ RUN apt-get update && \
     vim \
     wget \
     libgtk2.0-dev \
+    libgl1 \  
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
