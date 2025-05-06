@@ -7,32 +7,53 @@ import os
 import torch
 import logger
 
-def loadPreTrainedModel(gpuMode, model, modelPath):
+def loadPreTrainedModel(gpuMode, model, modelPath, map_location=None):
     if os.path.exists(modelPath):
-        if gpuMode and torch.cuda.is_available():
-            state_dict = torch.load(modelPath)
-        else:
-            state_dict = torch.load(modelPath, map_location=torch.device('cpu'))
-
-        # Handle the usual (non-DataParallel) case
         try:
-            model.load_state_dict(state_dict)
+            if gpuMode and torch.cuda.is_available():
+                if map_location is not None:
+                    state_dict = torch.load(modelPath, map_location=map_location)
+                else:
+                    state_dict = torch.load(modelPath)
+            else:
+                state_dict = torch.load(modelPath, map_location=torch.device('cpu'))
 
-        # Handle DataParallel case
-        except:
-            # create new OrderedDict that does not contain module.
-            from collections import OrderedDict
+            # Handle the usual (non-DataParallel) case
+            try:
+                model.load_state_dict(state_dict)
+                print('Pre-trained SR model loaded from:', modelPath)
 
-            new_state_dict = OrderedDict()
-            for k, v in state_dict.items():
-                name = "module." + k if not k.startswith("module.") else k  # remove module.
-                new_state_dict[name] = v
+            # Handle DataParallel case
+            except Exception as e:
+                print(f'Handling DataParallel state_dict: {e}')
+                # create new OrderedDict that does not contain module.
+                from collections import OrderedDict
 
-            # load params
-            model.load_state_dict(new_state_dict)
-        print('Pre-trained SR model loaded from:', modelPath)
+                new_state_dict = OrderedDict()
+                for k, v in state_dict.items():
+                    name = "module." + k if not k.startswith("module.") else k  # add module. if not present
+                    new_state_dict[name] = v
+
+                # load params
+                try:
+                    model.load_state_dict(new_state_dict)
+                    print('Pre-trained SR model loaded from:', modelPath)
+                except Exception as inner_e:
+                    print(f'Error loading model with modified state dict: {inner_e}')
+                    # Try another approach - removing module. prefix
+                    new_state_dict = OrderedDict()
+                    for k, v in state_dict.items():
+                        name = k[7:] if k.startswith("module.") else k  # remove module.
+                        new_state_dict[name] = v
+                    
+                    # Try loading again
+                    model.load_state_dict(new_state_dict)
+                    print('Pre-trained SR model loaded using prefix removal from:', modelPath)
+        except Exception as load_error:
+            print(f'Error loading model: {load_error}')
+            raise
     else:
-        print('Couldn\'t find pre-trained SR model at:', modelPath)
+        print('Could not find pre-trained SR model at:', modelPath)
 
 def printCUDAStats():
     logger.info("# of CUDA devices detected: %s", torch.cuda.device_count())

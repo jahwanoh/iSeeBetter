@@ -16,11 +16,11 @@ import logger
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
-parser.add_argument('-m', '--model', default="weights/netG_epoch_4_1.pth", help="Model")
+# parser.add_argument('-m', '--model', default="weights/netG_epoch_4_1.pth", help="Model")
 #parser.add_argument('-m', '--model', default="weights/netG_epoch_4_1.pth", help="Model")
-#parser.add_argument('-m', '--model', default="weights/RBPN_4x.pth", help="Model")
+parser.add_argument('-m', '--model', default="weights/RBPN_2x.pth", help="Model")
 parser.add_argument('-o', '--output', default='Results/', help="Location to save test results")
-parser.add_argument('-s', '--upscale_factor', type=int, default=4, help="Super-Resolution Scale Factor")
+parser.add_argument('-s', '--upscale_factor', type=int, default=2, help="Super-Resolution Scale Factor")
 parser.add_argument('-r', '--residual', action='store_true', required=False, help="")
 parser.add_argument('-c', '--gpu_mode', action='store_true', required=False, help="Use a CUDA compatible GPU if available")
 parser.add_argument('--testBatchSize', type=int, default=1, help="Testing Batch Size")
@@ -47,6 +47,8 @@ if cuda:
     print("Using GPU mode")
     if not torch.cuda.is_available():
         raise Exception("No GPU found, please run without --gpu_mode")
+else:
+    print("Using CPU mode")
 
 torch.manual_seed(args.seed)
 if cuda:
