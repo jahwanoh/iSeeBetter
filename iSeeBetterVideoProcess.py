@@ -14,7 +14,8 @@ import logger
 import gc
 import platform
 import sys
-import gi
+# Comment out gi import that's causing issues
+# import gi
 import tempfile
 import queue
 import threading
@@ -35,15 +36,18 @@ handle memory constraints, and provides extensive options for controlling the
 processing and output quality.
 """
 
-# Try to import GStreamer
+# Force OpenCV mode by setting USE_GSTREAMER to False
 USE_GSTREAMER = False
-try:
-    gi.require_version('Gst', '1.0')
-    from gi.repository import Gst, GObject, GLib
-    USE_GSTREAMER = True
-    print("GStreamer support enabled")
-except (ImportError, ValueError) as e:
-    print(f"GStreamer not available: {e}. Will use OpenCV for encoding.")
+print("GStreamer disabled. Using OpenCV for encoding.")
+
+# Try to import GStreamer
+# try:
+#     gi.require_version('Gst', '1.0')
+#     from gi.repository import Gst, GObject, GLib
+#     USE_GSTREAMER = True
+#     print("GStreamer support enabled")
+# except (ImportError, ValueError) as e:
+#     print(f"GStreamer not available: {e}. Will use OpenCV for encoding.")
 
 # Video processing settings
 parser = argparse.ArgumentParser(description='PyTorch Super Res Video Processing')
