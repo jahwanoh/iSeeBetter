@@ -1,8 +1,8 @@
 {
-	"name": "bepro_srgan",
+	"name": "bepro_iseebetter",
 	"context": "..",
 	// "dockerFile": "../Dockerfile.remote.arm64",
-	"image": "srgan-dev:latest",
+	"image": "iseebetter:latest",
 	"settings": {
 		"terminal.integrated.shell.linux": null
 	},
@@ -19,12 +19,15 @@
 		"--privileged",
 		"--net=host",
 		"--gpus=all",
+		"--shm-size=11G",
+		"-e NVIDIA_VISIBLE_DEVICES=all",
+		"-e NVIDIA_DRIVER_CAPABILITIES=all",
 		"--volume=/tmp:/tmp",
 		"--volume=/var/log:/var/log",
 		"--volume=/var/www/static:/var/www/static"
 	],
-	"workspaceFolder": "/SRGAN",
-	"workspaceMount": "source=/home/research/SRGAN,target=/SRGAN,type=bind,consistency=cached",
+	"workspaceFolder": "/iSeeBetter",
+	"workspaceMount": "source=/home/research/iSeeBetter,target=/iSeeBetter,type=bind,consistency=cached",
 	"remoteUser": "root"
 	// "remoteEnv": {
 	// 	"LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"

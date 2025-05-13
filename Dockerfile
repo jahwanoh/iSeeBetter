@@ -12,6 +12,7 @@ RUN apt-get update && \
     && add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
+    ffmpeg \
     python3.8 \
     python3.8-dev \
     python3.8-distutils \
@@ -22,7 +23,10 @@ RUN apt-get update && \
     vim \
     wget \
     libgtk2.0-dev \
-    libgl1 \  
+    libgl1 \
+    python3-gi \
+    python3-gi-cairo \
+    gir1.2-gtk-3.0 \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -35,7 +39,9 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1 
     python -m pip install --upgrade pip setuptools wheel
 
 # Set working directory
-WORKDIR /app
+WORKDIR /iSeeBetter
+# Copy project files
+COPY . .
 
 # Copy requirements first for better caching
 COPY requirements.txt .
@@ -44,17 +50,16 @@ COPY requirements.txt .
 # Add --no-cache-dir if you want to minimize image size
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
-COPY . .
+
 
 # Build Pyflow
-WORKDIR /app/pyflow
+WORKDIR /iSeeBetter/pyflow
 # Make sure Cython is installed first (either via requirements.txt or a separate RUN)
 RUN python setup.py build_ext -i && \
     cp pyflow*.so ..
 
 # Return to main directory
-WORKDIR /app
+WORKDIR /iSeeBetter
 
 # Set entrypoint
-ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT ["/bin/bash"]
